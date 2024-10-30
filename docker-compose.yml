@@ -3,27 +3,36 @@ version: '3.8'
 services:
   web:
     build: .
+    command: python app/app.py
     ports:
       - "5000:5000"
     volumes:
-      - ./app:/app
-      - ./uploads:/app/uploads
-      - ./processed:/app/processed
+      - .:/app
+    working_dir: /app
     depends_on:
       - broker
-      - celery
-
-  celery:
-    build: .
-    command: celery -A tasks worker --loglevel=info
-    volumes:
-      - ./app:/app
-      - ./uploads:/app/uploads
-      - ./processed:/app/processed
-    depends_on:
-      - broker
+      - celery_default
+      - celery_high_priority
 
   broker:
     image: redis:latest
     ports:
       - "6379:6379"
+
+  celery_default:
+    build: .
+    command: celery -A app.tasks worker -Q default -n default@%h
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - broker
+
+  celery_high_priority:
+    build: .
+    command: celery -A app.tasks worker -Q high_priority -n high_priority@%h
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - broker

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import os
-from tasks import process_image
+from tasks import process_image, app as celery_app
 from celery.result import AsyncResult
 
 app = Flask(__name__)
@@ -59,7 +59,8 @@ def upload_file():
 @app.route('/status/<task_id>')
 def get_status(task_id):
     """Check the status of a processing task"""
-    task_result = AsyncResult(task_id)
+    # Initialize AsyncResult with the Celery app
+    task_result = AsyncResult(task_id, app=celery_app)
     
     if task_result.ready():
         if task_result.successful():

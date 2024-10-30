@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize Celery
-app = Celery('image_processor',
+app = Celery('image_tasks',
              broker='redis://broker:6379/0',
              backend='redis://broker:6379/0')
 
@@ -19,15 +19,24 @@ app.conf.update(
     task_track_started=True,
     task_serializer='json',
     result_serializer='json',
-    accept_content=['json']
+    accept_content=['json'],
+    task_routes={
+        'image_tasks.process_image': {'queue': 'high_priority'},
+        # Add other tasks here with their queue assignments
+    },
+    task_default_queue='default',
+    worker_prefetch_multiplier=1,  # Process one task at a time
+    task_acks_late=True,  # Task acknowledgment after completion
 )
 
 class ImageProcessingError(Exception):
     pass
 
 @app.task(bind=True, 
+         name='image_tasks.process_image',
          max_retries=3,
-         retry_backoff=True)
+         retry_backoff=True,
+         queue='high_priority')
 def process_image(self, 
                  image_path: str, 
                  resize: tuple[int, int] = (800, 600),
