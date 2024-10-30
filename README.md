@@ -1,6 +1,10 @@
 ## USAGE
 
 ```sh
+docker-compose down
+
+docker-compose up --build
+
 curl -X POST \
   -F "file=@./app/image.jpeg" \
   -F "resize=1024,768" \
