@@ -1,0 +1,5 @@
+redis>=4.0.0
+celery
+kombu>=5.0.0
+Pillow
+Flask

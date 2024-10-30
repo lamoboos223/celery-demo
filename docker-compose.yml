@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+      - ./uploads:/app/uploads
+      - ./processed:/app/processed
+    depends_on:
+      - broker
+      - celery
+
+  celery:
+    build: .
+    command: celery -A tasks worker --loglevel=info
+    volumes:
+      - ./app:/app
+      - ./uploads:/app/uploads
+      - ./processed:/app/processed
+    depends_on:
+      - broker
+
+  broker:
+    image: redis:latest
+    ports:
+      - "6379:6379"
