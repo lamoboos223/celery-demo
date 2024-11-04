@@ -1,9 +1,10 @@
-from celery import Celery
-from PIL import Image
+import logging
 import os
 from datetime import datetime
-import logging
 from typing import Optional
+
+from celery import Celery
+from PIL import Image
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

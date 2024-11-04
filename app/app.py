@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
 import os
-from tasks import process_image, app as celery_app
-from celery.result import AsyncResult
-from pytz import timezone
+
 import pendulum
-import time
+from celery.result import AsyncResult
+from flask import Flask, jsonify, request
+from pytz import timezone
+from tasks import app as celery_app
+from tasks import process_image
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__)
 
 # Configuration
