@@ -2,3 +2,16 @@ uploads/*
 processed/*
 .DS_Store
 __pycache__
+celerybeat-schedule
+*.pyc
+*.pyo
+*.pyd
+*.db*
+*.log
+*.pid
+*.yml
+*.json
+*.csv
+*.txt
+*.xml
+*.jsonl
