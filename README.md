@@ -12,6 +12,12 @@ curl -X POST \
   -F "quality=90" \
   http://localhost:5000/upload
 
+curl -X POST http://localhost:5000/schedule-future \
+  -F "file=@app/image.jpeg" \
+  -F "resize=800,600" \
+  -F "quality=85" \
+  -F "schedule_time=2024-11-04T17:46:00"
+
 # check task status
 curl http://localhost:5000/task/<task_id>
 ```

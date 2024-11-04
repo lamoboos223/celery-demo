@@ -3,3 +3,6 @@ celery
 kombu>=5.0.0
 Pillow
 Flask
+werkzeug
+pytz
+pendulum
