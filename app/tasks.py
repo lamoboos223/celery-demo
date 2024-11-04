@@ -66,7 +66,7 @@ def process_image(
     Process an image with various operations
     """
     try:
-        import time
+        pass
 
         # time.sleep(10)
         logger.info(f"Starting to process image: {image_path}")

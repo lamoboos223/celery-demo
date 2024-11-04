@@ -3,10 +3,9 @@ from werkzeug.utils import secure_filename
 import os
 from tasks import process_image, app as celery_app
 from celery.result import AsyncResult
-from datetime import datetime
 from pytz import timezone
 import pendulum
-
+import time
 app = Flask(__name__)
 
 # Configuration
