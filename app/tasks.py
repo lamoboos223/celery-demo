@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from celery import Celery
+from celery.schedules import crontab
 from PIL import Image
 
 # Configure logging
@@ -35,18 +36,27 @@ class ImageProcessingError(Exception):
     pass
 
 
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     print("Celery configured")
-#     sender.add_periodic_task(
-#         10.0,
-#         process_image.s(
-#             image_path="/app/app/image.jpeg",
-#             resize=(800, 600),
-#             quality=85
-#         ),
-#         name='process-image'
-#     )
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # execute every 10 seconds
+    print("Celery configured")
+    sender.add_periodic_task(
+        10.0,
+        process_image.s(
+            image_path="/app/app/image.jpeg", resize=(800, 600), quality=85
+        ),
+        name="process-image",
+    )
+
+
+app.conf.beat_schedule = {
+    # Executes every Monday morning at 7:30 a.m.
+    "add-every-monday-morning": {
+        "task": "tasks.process_image",
+        "schedule": crontab(hour=7, minute=30, day_of_week=1),
+        "args": ("/app/app/image.jpeg", (800, 600), True, 85),
+    },
+}
 
 
 @app.task(
